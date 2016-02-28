@@ -389,11 +389,12 @@ function getDestination(query) {
   // var sQuery4 = "architecture winter snow outdoors travel church religion no person sky traditional building cross cold Christmas old tourism Orthodox landmark spirituality city";
   // var sQuery5 = "vehicle people competition race group festival many group transportation system adult man track race rally auto racing championship action road woman hurry"
 
-  var sFinalQuery = sExpediaRequestRoot + query + sCompleteKey
+  var sFinalQuery = sExpediaRequestRoot + query + sCompleteKey + "&verbose=true";
   console.log(sFinalQuery);
 
   requestCall(sFinalQuery, parseExpediaResponse);
 };
+
 
 /**
  * 
@@ -409,70 +410,81 @@ function requestCall(sUrl, fnCallback, index) {
   })
 };
 
+
 /**
- * 
+ * Parse Expedia response, and return the cities recommended
  */
 function parseExpediaResponse(oResponse) {
   var oResponseResult = oResponse.result;
-  console.log(oResponseResult);
-  var aLocations = undefined;
-  var iCounter = 0;
-  if (oResponseResult.pois !== undefined) {
-    // console.log(oResponseResult.pois);
-    aLocations = getIdNamesAndCoordinates(oResponseResult.pois);
+  //console.log("first hotel is: " + oResponseResult.hotels[0].city);
+  var cities = [];
+  for(var i = 0;i < oResponseResult.hotels.length;i++) {
+      var city = oResponseResult.hotels[i].city + ', ' + oResponseResult.hotels[i].state + ', ' + oResponseResult.hotels[i].country;
+      cities.push(city);
   }
-  else if (oResponseResult.regions !== undefined) {
-    // console.log(oResponseResult.pois);
-    aLocations = getIdNamesAndCoordinates(oResponseResult.regions);
-  }
-  else if (oResponseResult.clusters !== undefined) {
-    // console.log(oResponseResult.pois);
-  }
-  else {
-    console.log("Error");
-  }
+  //cities contains all the cities that are recommended by Expedia
+  console.log(cities);
+//   console.log(oResponseResult);
+//   var aLocations = undefined;
+//   var iCounter = 0;
+//   if (oResponseResult.pois !== undefined) {
+//     // console.log(oResponseResult.pois);
+//     aLocations = getIdNamesAndCoordinates(oResponseResult.pois);
+//   }
+//   else if (oResponseResult.regions !== undefined) {
+//     // console.log(oResponseResult.pois);
+//     aLocations = getIdNamesAndCoordinates(oResponseResult.regions);
+//   }
+//   else if (oResponseResult.clusters !== undefined) {
+//     // console.log(oResponseResult.pois);
+//   }
+//   else {
+//     console.log("Error");
+//   }
 
-  var fnGetImageInfoSuccess = function(oImageInfo, index) {
-    // console.log(oImageInfo.photos[0].photo_file_url);
-    aLocations[index].sImageUrl = oImageInfo.photos[0].photo_file_url;
-    iCounter++;
-    if (iCounter === aLocations.length) {
-      printArray(aLocations);
-    }
-  };
+//   var fnGetImageInfoSuccess = function(oImageInfo, index) {
+//     // console.log(oImageInfo.photos[0].photo_file_url);
+//     aLocations[index].sImageUrl = oImageInfo.photos[0].photo_file_url;
+//     iCounter++;
+//     if (iCounter === aLocations.length) {
+//       printArray(aLocations);
+//     }
+//   };
 
-  if (!aLocations) {
-    // tagMultipleURL()
-    console.log("Error: aLocations is undefined");
-    return;
-  }
-  aLocations.forEach(function(location, index) {
-    requestCall(location.sImageUrl, fnGetImageInfoSuccess, index);
-  })
+//   if (!aLocations) {
+//     // tagMultipleURL()
+//     console.log("Error: aLocations is undefined");
+//     return;
+//   }
+//   aLocations.forEach(function(location, index) {
+//     requestCall(location.sImageUrl, fnGetImageInfoSuccess, index);
+//   })
 };
+
 
 /**
  * 
  */
-function getIdNamesAndCoordinates(aPlace) {
-  // TODO: clusters
-  var aLocations = [];
-  aPlace.forEach(function(oPlace) {
-    var oLocation = {};
-    oLocation.sid = oPlace.id;
-    oLocation.sName = oPlace.name;
-    // if (oLocation.center !== undefined) {
-      var iLatitude = oPlace.center.lat;
-      var iLongitude = oPlace.center.lng;
+// function getIdNamesAndCoordinates(aPlace) {
+//   // TODO: clusters
+//   var aLocations = [];
+//   aPlace.forEach(function(oPlace) {
+//     var oLocation = {};
+//     oLocation.sid = oPlace.id;
+//     oLocation.sName = oPlace.name;
+//     // if (oLocation.center !== undefined) {
+//       var iLatitude = oPlace.center.lat;
+//       var iLongitude = oPlace.center.lng;
 
-      oLocation.sImageUrl = getPanoramioQuery(iLatitude, iLongitude);
-    // }
-    aLocations.push(oLocation);
-  });
-  // printArray(aLocations);
+//       oLocation.sImageUrl = getPanoramioQuery(iLatitude, iLongitude);
+//     // }
+//     aLocations.push(oLocation);
+//   });
+//   // printArray(aLocations);
 
-  return aLocations;
-};
+//   return aLocations;
+// };
+
 
 /**
  * 
@@ -483,18 +495,19 @@ function printArray(array) {
   });
 };
 
+
 /**
  * 
  */
-function getPanoramioQuery(iLatitude, iLongitude) {
-  var iThhold = 0.05;
-  var iMinx = iLongitude - iThhold;
-  var iMaxx = iLongitude + iThhold;
-  var iMiny = iLatitude - iThhold;
-  var iMaxy = iLatitude + iThhold;
+// function getPanoramioQuery(iLatitude, iLongitude) {
+//   var iThhold = 0.05;
+//   var iMinx = iLongitude - iThhold;
+//   var iMaxx = iLongitude + iThhold;
+//   var iMiny = iLatitude - iThhold;
+//   var iMaxy = iLatitude + iThhold;
 
-  var queryPanoramioRoot = "http://www.panoramio.com/map/get_panoramas.php?order=popularity&set=public&from=0&to=1"
-    + "&minx=" + iMinx + "&miny=" + iMiny + "&maxx=" + iMaxx + "&maxy=" + iMaxy;
-    // ??&callback=MyCallback";
-  return queryPanoramioRoot;
-};
+//   var queryPanoramioRoot = "http://www.panoramio.com/map/get_panoramas.php?order=popularity&set=public&from=0&to=1"
+//     + "&minx=" + iMinx + "&miny=" + iMiny + "&maxx=" + iMaxx + "&maxy=" + iMaxy;
+//     // ??&callback=MyCallback";
+//   return queryPanoramioRoot;
+// };
