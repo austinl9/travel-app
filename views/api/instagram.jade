@@ -16,49 +16,6 @@ block content
       i.fa.fa-code-fork
       | API Endpoints
 
-  br
-  p.lead Username Search for
-    strong  richellemead
-  table.table.table-hover.table-bordered
-    thead
-      tr
-        th Picture
-        th Username
-        th Full Name
-        th Bio
-    tbody
-      for user in usernames
-        tr
-          td
-            img(src='#{user.profile_picture}', width='75', height='75')
-          td= user.username
-          td= user.full_name
-          td= user.bio
-
-  hr
-  p.lead User Search for ID
-    strong  175948269
-
-
-  .media
-    a.pull-left(href='http://instagram.com/#{userById.username}')
-      img.thumbnail(src='#{userById.profile_picture}', width='110', height='110')
-    .media-body
-      h4= userById.full_name
-      p= userById.bio
-
-  hr
-  p.lead
-    strong Popular Images
-    |  on Instagram
-  .row
-    for image in popularImages
-      .col-xs-3
-        a.thumbnail(href='#{image.link}')
-          img(src='#{image.images.standard_resolution.url}', height='320px')
-
-
-
   hr
   p.lead
     | My Recent
