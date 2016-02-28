@@ -113,7 +113,7 @@ exports.getFacebook = function(req, res, next) {
  * GET /api/instagram
  * Instagram API example.
  */
-exports.getInstagram = function(req, res, next) {
+exports.getInstagram = function(req, res, next) { 
   ig = require('instagram-node').instagram();
 
   var token = _.find(req.user.tokens, { kind: 'instagram' });
@@ -141,6 +141,18 @@ exports.getInstagram = function(req, res, next) {
       });
     }
   }, function(err, results) {
+      //TODO: make a function
+      var urlList = [];
+      for(i = 0; i < results.myRecentMedia.length;i++) {
+          var url = results.myRecentMedia[i].images.standard_resolution.url;
+          var n = url.indexOf('.jpg');
+          var url2 = url.substring(0,n+4);
+          var final_url = url2.substring(0,4) + url2.substring(5,url2.length);
+          urlList.push(final_url);
+        //   console.log("urls are: " + urlList);
+      }
+      console.log("urls are: " + urlList);
+      
     if (err) {
       return next(err);
     }
