@@ -3,14 +3,22 @@ extends layout
 block content
   -var d1 = []
   -var d2= []
+  -var cityList = []
   for tag in tags
     - d1.push(tag.text)
     - d2.push(tag.size)
+    
+  
+    
+    #wordList.col
+    
+    
   script(src='http://d3js.org/d3.v3.min.js')
   script(src='https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js', charset='utf-8')
   script.
       var objectsName = '#{d1}'
       var objectsSize = '#{d2}'
+      var cityListNames = '#{cityList}'
       var objectsNameArray = objectsName.split(',');
       var objectsSizeArray = objectsSize.split(',');
       console.log(objectsNameArray)
@@ -83,6 +91,7 @@ block content
          cities.push(city);
       }
       console.log(cities);
+      document.getElementById("wordList").innerHTML = cities;
       console.log("heyy " + resp)
       }
       console.log(tagsToAdd);
@@ -125,6 +134,7 @@ block content
       }
       }
       }
+      
       //This method tells the word cloud to redraw with a new set of words.
       //In reality the new words would probably come from a server request,
       // user input or some other source.
