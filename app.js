@@ -36,6 +36,8 @@ var userController = require('./controllers/user');
 var apiController = require('./controllers/api');
 var contactController = require('./controllers/contact');
 
+var tagController = require('./controllers/tag');
+
 /**
  * API keys and Passport configuration.
  */
@@ -136,6 +138,7 @@ app.get('/api/foursquare', passportConfig.isAuthenticated, passportConfig.isAuth
 app.get('/api/facebook', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
 app.get('/api/instagram', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getInstagram);
 
+app.get('/tags', tagController.getTags);
 
 /**
  * OAuth authentication routes. (Sign in)

@@ -24,6 +24,8 @@ var ig;
 var Y;
 var request;
 
+var Tag = require('../models/Tag.js');
+
 //MAP for JOHN
 var hashMap;
 //===============================================================
@@ -122,11 +124,26 @@ function commonResultHandler( err, res ) {
    myMap =  parseRequest(res, myMap);
     hashMap = myMap;
     //console.log(myMap);
+
+    addToDb(myMap)
     console.log(hashMap);
     
     var expediaString = createExpString(hashMap);
     console.log(expediaString);
     getDestination(expediaString);
+  }
+}
+
+function addToDb(map) {
+  console.log("Sanity");
+  for(val in map) {
+    var tag = new Tag({
+      text: val,
+      size: map[val]
+    });
+    tag.save(function(err) {
+      if (err) return console.log(err);
+    });
   }
 }
 
