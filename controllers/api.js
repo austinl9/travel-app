@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var async = require('async');
+var request = require("request");
 
 /**
  * Split into declaration and initialization for better startup performance.
@@ -121,8 +122,11 @@ function commonResultHandler( err, res ) {
    myMap =  parseRequest(res, myMap);
     hashMap = myMap;
     //console.log(myMap);
-   // console.log(hashMap);
-
+    console.log(hashMap);
+    
+    var expediaString = createExpString(hashMap);
+    console.log(expediaString);
+    getDestination(expediaString);
   }
 }
 
@@ -146,9 +150,19 @@ function parseRequest(res, map) {
       var val = res.results[j].result.tag.classes[i];
       //console.log(res.results[0].result.tag.classes[i]);
       addToMap(val, map);
+      
     }
   }
   return map;
+}
+
+function createExpString(map) {
+    var tempString = "";
+    for(var key in map){
+        // console.log(key);
+        tempString = tempString + key+ " ";
+    }
+    return tempString;
 }
 
 
@@ -311,7 +325,7 @@ exports.getInstagram = function(req, res, next) {
     //     //   console.log("urls are: " + urlList);
     //   }
     var urlList = parseURL(results);
-    console.log("urls are: " + urlList);
+    // console.log("urls are: " + urlList);
 
     getthetagString(urlList);
 
@@ -342,3 +356,126 @@ function parseURL(results) {
 };
 
 
+/**
+ * Expedia Shit
+ */
+function getDestination(query) {
+  var sExpediaKey = "ZjxRGGYdEG5DAiUBo3dDdqBCCIo313Qh";
+  var sExpediaRequestRoot = "http://terminal2.expedia.com/x/nlp/results?q=";
+  var sCompleteKey = "&apikey=" + sExpediaKey;
+
+  // var sQuery1 = "people"+ "landscape "+ "group "+ "daylight "+ "adult "+ "rock "+ "seashore "+ "travel "+ "environment "+ "recreation "+ "tourism "+ "man "+ "mountain "+ "outdoors "+ "many "+ "scenic " + "motion "+ "tourist "+ "sky "+ "adventure ";
+  // var sQuery2 = "beach "+  "water "+  "people "+  "sea "+  "seashore "+  "travel "+  "ocean "+  "leisure "+  "recreation "+  "sand "+  "group "+  "outdoors "+  "man "+  "adult "+  "daylight "+  "lifestyle "+  "vacation "+  "landscape "+  "sky "+  "summer ";
+  // var sQuery3 = "indoors "+"window "+"interior design "+"furniture "+"no person "+"room "+"contemporary "+"seat "+"house "+"chair "+"curtain "+"home "+"table "+"luxury "+"wood "+"easy chair "+"apartment "+"architecture "+"rug "+"family"
+  // var sQuery4 = "architecture winter snow outdoors travel church religion no person sky traditional building cross cold Christmas old tourism Orthodox landmark spirituality city";
+  // var sQuery5 = "vehicle people competition race group festival many group transportation system adult man track race rally auto racing championship action road woman hurry"
+
+  var sFinalQuery = sExpediaRequestRoot + query + sCompleteKey
+  console.log(sFinalQuery);
+
+  requestCall(sFinalQuery, parseExpediaResponse);
+};
+
+/**
+ * 
+ */
+function requestCall(sUrl, fnCallback, index) {
+    request({
+     url: sUrl,
+     json: true
+  }, function (error, response, body) {
+     if (!error && response.statusCode === 200) {
+        fnCallback(body, index);
+     }
+  })
+};
+
+/**
+ * 
+ */
+function parseExpediaResponse(oResponse) {
+  var oResponseResult = oResponse.result;
+  console.log(oResponseResult);
+  var aLocations = undefined;
+  var iCounter = 0;
+  if (oResponseResult.pois !== undefined) {
+    // console.log(oResponseResult.pois);
+    aLocations = getIdNamesAndCoordinates(oResponseResult.pois);
+  }
+  else if (oResponseResult.regions !== undefined) {
+    // console.log(oResponseResult.pois);
+    aLocations = getIdNamesAndCoordinates(oResponseResult.regions);
+  }
+  else if (oResponseResult.clusters !== undefined) {
+    // console.log(oResponseResult.pois);
+  }
+  else {
+    console.log("Error");
+  }
+
+  var fnGetImageInfoSuccess = function(oImageInfo, index) {
+    // console.log(oImageInfo.photos[0].photo_file_url);
+    aLocations[index].sImageUrl = oImageInfo.photos[0].photo_file_url;
+    iCounter++;
+    if (iCounter === aLocations.length) {
+      printArray(aLocations);
+    }
+  };
+
+  if (!aLocations) {
+    // tagMultipleURL()
+    console.log("Error: aLocations is undefined");
+    return;
+  }
+  aLocations.forEach(function(location, index) {
+    requestCall(location.sImageUrl, fnGetImageInfoSuccess, index);
+  })
+};
+
+/**
+ * 
+ */
+function getIdNamesAndCoordinates(aPlace) {
+  // TODO: clusters
+  var aLocations = [];
+  aPlace.forEach(function(oPlace) {
+    var oLocation = {};
+    oLocation.sid = oPlace.id;
+    oLocation.sName = oPlace.name;
+    // if (oLocation.center !== undefined) {
+      var iLatitude = oPlace.center.lat;
+      var iLongitude = oPlace.center.lng;
+
+      oLocation.sImageUrl = getPanoramioQuery(iLatitude, iLongitude);
+    // }
+    aLocations.push(oLocation);
+  });
+  // printArray(aLocations);
+
+  return aLocations;
+};
+
+/**
+ * 
+ */
+function printArray(array) {
+  array.forEach(function(element) {
+    console.log(element);
+  });
+};
+
+/**
+ * 
+ */
+function getPanoramioQuery(iLatitude, iLongitude) {
+  var iThhold = 0.05;
+  var iMinx = iLongitude - iThhold;
+  var iMaxx = iLongitude + iThhold;
+  var iMiny = iLatitude - iThhold;
+  var iMaxy = iLatitude + iThhold;
+
+  var queryPanoramioRoot = "http://www.panoramio.com/map/get_panoramas.php?order=popularity&set=public&from=0&to=1"
+    + "&minx=" + iMinx + "&miny=" + iMiny + "&maxx=" + iMaxx + "&maxy=" + iMaxy;
+    // ??&callback=MyCallback";
+  return queryPanoramioRoot;
+};

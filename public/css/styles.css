@@ -67,16 +67,12 @@ p {
 
 .bg-primary {
     background-color: #333;
+    height: 100%;
 }
 
 .bg-dark {
     color: #eee;
     background-color: #222;
-}
-
-.cursive {
-    font-family: 'Dancing Script', cursive;
-    text-transform: none;
 }
 
 .text-faded {
@@ -497,7 +493,7 @@ fieldset[disabled] .btn-default.active {
 }
 
 .btn-xl {
-    padding: 15px 30px;
+    padding: 15px 60px;
     font-size: 20px;
 }
 
@@ -522,3 +518,4 @@ img::-moz-selection {
     color: #fff;
     background: 0 0;
 }
+
