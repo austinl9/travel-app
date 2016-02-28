@@ -372,7 +372,7 @@ function getDestination(query) {
   // var sQuery4 = "architecture winter snow outdoors travel church religion no person sky traditional building cross cold Christmas old tourism Orthodox landmark spirituality city";
   // var sQuery5 = "vehicle people competition race group festival many group transportation system adult man track race rally auto racing championship action road woman hurry"
 
-  var sFinalQuery = sExpediaRequestRoot + query + sCompleteKey
+  var sFinalQuery = sExpediaRequestRoot + query + sCompleteKey + "&verbose=true";
   console.log(sFinalQuery);
 
   requestCall(sFinalQuery, parseExpediaResponse);
