@@ -1,15 +1,13 @@
 extends layout
 
 block content
+  h4 Click on one of the tags generated in the cloud below to recommend a location to travel to based on the tag clicked
   -var d1 = []
   -var d2= []
   -var cityList = []
   for tag in tags
     - d1.push(tag.text)
     - d2.push(tag.size)
-    
-  
-    
     #wordList.col
     
     

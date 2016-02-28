@@ -4,12 +4,13 @@ block content
   .page-header
     h2
       i.fa.fa-instagram(style='color: #517fa4')
-      | Instagram API
+      | My Instagram Photos
 
-  hr
   p.lead
-    | My Recent
-    strong  Media
+    | My Recent Photos
+  a(href='/tags')
+    button.btn.btn-primary View Tags
+    hr
   .row
     for image in myRecentMedia
       .col-xs-3
