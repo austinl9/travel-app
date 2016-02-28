@@ -293,27 +293,28 @@ exports.getInstagram = function(req, res, next) {
   ig.use({ client_id: process.env.INSTAGRAM_ID, client_secret: process.env.INSTAGRAM_SECRET });
   ig.use({ access_token: token.accessToken });
   async.parallel({
-    searchByUsername: function(done) {
-      ig.user_search('richellemead', function(err, users, limit) {
-        done(err, users);
-      });
-    },
-    searchByUserId: function(done) {
-      ig.user('175948269', function(err, user) {
-        done(err, user);
-      });
-    },
-    popularImages: function(done) {
-      ig.media_popular(function(err, medias) {
-        done(err, medias);
-      });
-    },
+    // searchByUsername: function(done) {
+    //   ig.user_search('richellemead', function(err, users, limit) {
+    //     done(err, users);
+    //   });
+    // },
+    // searchByUserId: function(done) {
+    //   ig.user('175948269', function(err, user) {
+    //     done(err, user);
+    //   });
+    // },
+    // popularImages: function(done) {
+    //   ig.media_popular(function(err, medias) {
+    //     done(err, medias);
+    //   });
+    // },
     myRecentMedia: function(done) {
       ig.user_self_media_recent(function(err, medias, pagination, limit) {
         done(err, medias);
       });
     }
   }, function(err, results) {
+      console.log(results);
       //TODO: make a function
     //   var urlList = [];
     //   for(i = 0; i < results.myRecentMedia.length;i++) {
@@ -326,6 +327,7 @@ exports.getInstagram = function(req, res, next) {
     //   }
     var urlList = parseURL(results);
     // console.log("urls are: " + urlList);
+    
 
     getthetagString(urlList);
 
