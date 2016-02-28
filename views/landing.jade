@@ -78,12 +78,36 @@ html
           .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.text-center
             h2.margin-top-0.text-primary LOG IN
             |                     
-            br
-            |                     
-            p.text-faded
-              | Bootstrap&apos;s responsive grid comes in 4 sizes or &quot;breakpoints&quot;: tiny (xs), small(sm), medium(md) and large(lg). These 4 grid sizes enable you create responsive layouts that behave accordingly on different devices.
-            | 
-            a.btn.btn-default.btn-xl.page-scroll(href='#three') Learn More
+            
+        form.form-horizontal(method='POST')
+            input(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.col-sm-3.control-label(for='email') Email
+              .col-sm-7
+                input.form-control(type='email', name='email', id='email', placeholder='Email', autofocus=true)
+            .form-group
+              label.col-sm-3.control-label(for='password') Password
+              .col-sm-7
+                input.form-control(type='password', name='password', id='password', placeholder='Password')
+            .form-group
+              .col-sm-offset-3.col-sm-7
+                button.col-sm-3.btn.btn-primary(type='submit')
+                  i.fa.fa-user
+                  | Login
+                a.btn.btn-link(href='/forgot') Forgot your password?
+            .form-group
+              .col-sm-offset-3.col-sm-7
+                hr
+            .form-group
+      .col-sm-offset-3.col-sm-7
+        a.btn.btn-block.btn-facebook.btn-social(href='/auth/facebook')
+          i.fa.fa-facebook
+          | Sign in with Facebook
+
+        a.btn.btn-block.btn-instagram.btn-social(href='/auth/instagram')
+          i.fa.fa-instagram
+
+      a.btn.btn-default.btn-xl.page-scroll(href='#three') Learn More
     |     
     section#two
       .container
