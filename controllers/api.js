@@ -125,8 +125,8 @@ function commonResultHandler( err, res ) {
     console.log(hashMap);
     
     var expediaString = createExpString(hashMap);
+    console.log(expediaString);
     getDestination(expediaString);
-
   }
 }
 
@@ -162,7 +162,7 @@ function createExpString(map) {
         // console.log(key);
         tempString = tempString + key+ " ";
     }
-    console.log(tempString);
+    return tempString;
 }
 
 
