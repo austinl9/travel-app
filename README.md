@@ -9,4 +9,4 @@ Travel App
 
 check us out on MICROSOFT AZURE
 
-http://hashtagigdaily.azurewebsites.com
+http://hashtagigdaily.azurewebsites.net
